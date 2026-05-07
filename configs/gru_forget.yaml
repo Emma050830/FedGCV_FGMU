@@ -1,0 +1,10 @@
+forgetting:
+  enabled: True
+  decay_factor: 0.85
+  
+gru:
+  input_dim: 64
+  hidden_dim: 128
+  num_layers: 2
+  dropout: 0.3
+  device: cuda:0
