@@ -49,15 +49,15 @@ class FedGCN(nn.Module):
 
     def aug(self, data):
 
-        # Use the GNN to extract features
+        # 使用GNN提取特征
         with torch.no_grad():
             node_features,_ = self.forward(data)
 
-        # Combine features between any two nodes (simplified; real implementations may be more complex)
-        # Here we use an outer-product-like similarity to model potential edge features
+        # 任意两节点间的特征组合（这里简化处理，实际可能需要复杂的操作）
+        # 假设使用外积来模拟节点间潜在的连接特征
         logits = torch.matmul(node_features, node_features.t())
 
-        # Apply Gumbel-Softmax sampling
+        # 应用Gumbel-Softmax采样
         adj_sampled = self.gumbel_softmax(logits, tau=0.5)
         return adj_sampled, logits
 
@@ -70,20 +70,20 @@ class FedGCN(nn.Module):
 class MLP(nn.Module):
     def __init__(self, input_dim, output_dim, dropout):
         super(MLP, self).__init__()
-        # Define the first linear layer
+        # 定义第一个线性层
         self.fc1 = nn.Linear(input_dim, input_dim)
 
         self.dropout = nn.Dropout(dropout)
-        # Define the second linear layer
+        # 定义第二个线性层
         self.fc2 = nn.Linear(input_dim, output_dim)
 
     def forward(self, x):
-        # Pass through the first linear layer
+        # 输入通过第一个线性层
         x = self.fc1(x)
-        # Apply ReLU activation
+        # 应用ReLU激活函数
         x = F.relu(x)
-        # Apply dropout
+        # 应用dropout
         x = self.dropout(x)
-        # Output through the second linear layer
+        # 输出通过第二个线性层
         x = self.fc2(x)
         return x
